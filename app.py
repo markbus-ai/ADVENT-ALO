@@ -1,6 +1,8 @@
+import asyncio
 from flask import Flask, render_template, jsonify, url_for
 from datetime import datetime
 import os
+import aiohttp
 
 app = Flask(__name__)
 
@@ -49,7 +51,7 @@ GIFTS = {
     10: {
         "type": "link",
         "content": "static/love-puzzle.html",
-        "description": "Un rompecabezas digital con nuestra foto favorita - ¡Armalo para ver un mensaje especial! 🧩"
+        "description": "Un rompecabezas con nuestra foto favorita - ¡Armalo para ver un mensaje especial! 🧩"
     },
     11: {
         "type": "link",
@@ -59,7 +61,7 @@ GIFTS = {
     12: {
         "type": "link",
         "content": "static/stories/our_story.html",
-        "description": "el dia en el que te conoci - Con fotos, música y animaciones 📖✨"
+        "description": "el dia en el que te conoci 📖✨"
     },
     13: {
         "type": "link",
@@ -67,7 +69,7 @@ GIFTS = {
         "description": "Un juego de memoria personalizado con nuestros momentos favoritos 🎮"
     },
     14: {
-        "type": "art",
+        "type": "link",
         "content": "static/art/digital_drawing.jpg",
         "description": "Un dibujo de kitty que hice de vos"
     },
@@ -84,7 +86,7 @@ GIFTS = {
             "Cada rayo de sol al amanecer",
             "Es mi sonrisa al pensarte",
             "Cada gota de lluvia",
-            "Es un beso que guardo para ti",
+            "Es un beso que guardo para vos",
             "Y cada latido de mi corazón",
             "Tiene grabado tu nombre ✨"
         ],
@@ -93,7 +95,7 @@ GIFTS = {
     17: {
         "type": "link",
         "content": "static/quiz/our_love.html",
-        "description": "Un quiz interactivo sobre nuestra historia - ¡Con premios sorpresa! 🎯"
+        "description": "Un quiz interactivo sobre nuestra historia"
     },
     18: {
         "type": "link",
@@ -203,9 +205,37 @@ def get_gift(day):
         gift['content'] = verify_image_path(gift['content'])
         print(f"Original path: {original_path}")
         print(f"Verified path: {gift['content']}")
+    # Manejar el tipo poema
+    elif gift['type'] == 'poem':
+        # Convertir el contenido del poema en una lista de líneas
+        gift['content'] = gift['content'].split('\n')
     
     print(f"Enviando datos del regalo: {gift}")
     return jsonify(gift)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+async def keep_alive():
+    """Hace ping al servidor cada 5 minutos para mantenerlo activo"""
+    app_url = 'https://advent-alo.onrender.com'
+    while True:
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"{app_url}/ping") as response:
+                    print(f"Ping status: {response.status}")
+            await asyncio.sleep(300)  # 5 minutos
+        except aiohttp.ClientError as e:
+            print(f"Error en keep_alive: {e}")
+        except Exception as e:
+            print(f"Unexpected error in keep_alive: {e}")
+        await asyncio.sleep(60)  # Espera 1 minuto antes de reintentar
+
+
+from threading import Thread
+
+def start_keep_alive():
+    asyncio.run(keep_alive())
+
+if __name__ == "__main__":
+    # Iniciar la tarea en segundo plano
+    Thread(target=start_keep_alive, daemon=True).start()
+    app.run(host='0.0.0.0', port=8000, debug=True)

@@ -63,15 +63,20 @@
         #puzzle-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-gap: 10px;
-            margin: 20px 0;
+            gap: 5px;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
             perspective: 1000px;
+            background: rgba(0,0,0,0.1);
+            padding: 10px;
+            border-radius: 15px;
         }
 
         .puzzle-piece {
-            width: 100px;
-            height: 100px;
-            background-size: 400px 400px;
+            width: 100%;
+            height: 100%;
+            background-size: 400%;
             cursor: pointer;
             border-radius: 10px;
             transition: all 0.3s ease;
@@ -171,6 +176,11 @@
             position: absolute;
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
+
+        .puzzle-piece.empty {
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed var(--secondary-color);
+        }
     </style>
 </head>
 <body>
@@ -182,13 +192,13 @@
     <div id="win-overlay">
         <h1>¡Puzzle Navideño Resuelto!</h1>
         <p id="special-message"></p>
-        <button class="restart-btn" onclick="restartPuzzle()">Jugar de Nuevo 🎁</button>
+        <button class="restart-btn" onclick="restartPuzzle()">Jugar de Nuevo </button>
     </div>
 
     <script>
         const puzzleConfig = {
             gridSize: 4,
-            imageSrc: 'static/images/imgday3.jpg',
+            imageSrc: '/static/images/imgday3.jpg',
             specialMessage: '¡Te amo más que a la Navidad misma! 🎄❤️'
         };
 
@@ -231,74 +241,124 @@
             container.innerHTML = '';
             pieces = [];
 
-            // Generate pieces
-            for (let i = 0; i < puzzleConfig.gridSize * puzzleConfig.gridSize; i++) {
+            // Crear las piezas del puzzle
+            for (let i = 0; i < puzzleConfig.gridSize * puzzleConfig.gridSize - 1; i++) {
                 const piece = document.createElement('div');
                 piece.classList.add('puzzle-piece');
                 piece.dataset.index = i;
                 
-                // Calculate background position
+                // Calcular posición del background
                 const row = Math.floor(i / puzzleConfig.gridSize);
                 const col = i % puzzleConfig.gridSize;
                 
                 piece.style.backgroundImage = `url(${puzzleConfig.imageSrc})`;
-                piece.style.backgroundPosition = 
-                    `-${col * 100}px -${row * 100}px`;
+                piece.style.backgroundSize = `${puzzleConfig.gridSize * 100}%`;
+                piece.style.backgroundPosition = `-${col * 100}% -${row * 100}%`;
                 
                 piece.addEventListener('click', () => movePiece(piece));
                 container.appendChild(piece);
                 pieces.push(piece);
             }
 
-            // Shuffle pieces
+            // Agregar el espacio vacío
+            const emptyPiece = document.createElement('div');
+            emptyPiece.classList.add('puzzle-piece', 'empty');
+            emptyPiece.dataset.index = pieces.length;
+            container.appendChild(emptyPiece);
+            pieces.push(emptyPiece);
+
+            // Mezclar las piezas
             shufflePieces();
         }
 
         function shufflePieces() {
-            // Store original order
-            originalOrder = pieces.map(p => p.dataset.index);
+            let validMoves = 100; // Número de movimientos aleatorios
+            const size = puzzleConfig.gridSize;
             
-            // Fisher-Yates shuffle
-            for (let i = pieces.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pieces[i].style.order, pieces[j].style.order] = 
-                [pieces[j].style.order, pieces[i].style.order];
+            while (validMoves > 0) {
+                const emptyIndex = pieces.findIndex(p => p.classList.contains('empty'));
+                const emptyRow = Math.floor(emptyIndex / size);
+                const emptyCol = emptyIndex % size;
+                
+                // Encontrar movimientos posibles
+                const possibleMoves = [];
+                
+                // Arriba
+                if (emptyRow > 0) possibleMoves.push(emptyIndex - size);
+                // Abajo
+                if (emptyRow < size - 1) possibleMoves.push(emptyIndex + size);
+                // Izquierda
+                if (emptyCol > 0) possibleMoves.push(emptyIndex - 1);
+                // Derecha
+                if (emptyCol < size - 1) possibleMoves.push(emptyIndex + 1);
+                
+                // Hacer un movimiento aleatorio
+                const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                swapPieces(randomMove, emptyIndex);
+                validMoves--;
             }
         }
 
         function movePiece(clickedPiece) {
-            // Find adjacent empty spaces
-            const emptyPieces = pieces.filter(p => !p.style.order);
+            const size = puzzleConfig.gridSize;
+            const clickedIndex = Array.from(clickedPiece.parentNode.children).indexOf(clickedPiece);
+            const emptyIndex = pieces.findIndex(p => p.classList.contains('empty'));
             
-            if (emptyPieces.length === 0) {
-                // First move, remove one piece
-                const randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
-                randomPiece.style.order = '-1';
+            const clickedRow = Math.floor(clickedIndex / size);
+            const clickedCol = clickedIndex % size;
+            const emptyRow = Math.floor(emptyIndex / size);
+            const emptyCol = emptyIndex % size;
+            
+            // Verificar si el movimiento es válido
+            if (
+                (Math.abs(clickedRow - emptyRow) === 1 && clickedCol === emptyCol) ||
+                (Math.abs(clickedCol - emptyCol) === 1 && clickedRow === emptyRow)
+            ) {
+                swapPieces(clickedIndex, emptyIndex);
+                checkWin();
             }
+        }
 
-            const currentPieceOrder = clickedPiece.style.order || '0';
+        function swapPieces(index1, index2) {
+            const parent = pieces[0].parentNode;
+            const piece1 = parent.children[index1];
+            const piece2 = parent.children[index2];
             
-            // Simple swapping logic with adjacent pieces
-            pieces.forEach(piece => {
-                if (piece !== clickedPiece && 
-                    (!piece.style.order || piece.style.order === '-1')) {
-                    piece.style.order = currentPieceOrder;
-                    clickedPiece.style.order = '-1';
-                }
-            });
-
-            checkWin();
+            // Intercambiar posiciones en el DOM
+            const temp = document.createElement('div');
+            parent.insertBefore(temp, piece1);
+            parent.insertBefore(piece1, piece2);
+            parent.insertBefore(piece2, temp);
+            parent.removeChild(temp);
+            
+            // Actualizar array de piezas
+            [pieces[index1], pieces[index2]] = [pieces[index2], pieces[index1]];
         }
 
         function checkWin() {
-            const currentOrder = pieces.map(p => p.dataset.index);
-            const isCorrect = currentOrder.every((val, idx) => 
-                val === originalOrder[idx]);
+            const isWin = pieces.every((piece, index) => {
+                if (piece.classList.contains('empty')) {
+                    return index === pieces.length - 1;
+                }
+                return parseInt(piece.dataset.index) === index;
+            });
 
-            if (isCorrect) {
-                document.getElementById('special-message').textContent = 
-                    puzzleConfig.specialMessage;
-                document.getElementById('win-overlay').style.display = 'flex';
+            if (isWin) {
+                // Mostrar la imagen completa
+                const emptyPiece = pieces.find(p => p.classList.contains('empty'));
+                emptyPiece.classList.remove('empty');
+                emptyPiece.style.backgroundImage = `url(${puzzleConfig.imageSrc})`;
+                emptyPiece.style.backgroundSize = `${puzzleConfig.gridSize * 100}%`;
+                
+                const lastIndex = pieces.length - 1;
+                const row = Math.floor(lastIndex / puzzleConfig.gridSize);
+                const col = lastIndex % puzzleConfig.gridSize;
+                emptyPiece.style.backgroundPosition = `-${col * 100}% -${row * 100}%`;
+                
+                setTimeout(() => {
+                    document.getElementById('special-message').textContent = puzzleConfig.specialMessage;
+                    document.getElementById('win-overlay').style.display = 'flex';
+                }, 500);
             }
         }
 
@@ -311,6 +371,7 @@
         createSnowflakes();
         createOrnaments();
         createPuzzle();
+    
     </script>
 </body>
 </html>
