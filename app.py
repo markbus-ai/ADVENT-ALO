@@ -138,7 +138,9 @@ GIFTS = {
         "description": "¡Feliz Navidad mi amor! Un árbol de Navidad virtual que podés decorar a tu gusto con luces, adornos, guirnaldas y hasta poner regalitos debajo. ¡Guardá tu diseño y compartilo conmigo! 🎄🎁✨"
     }
 }
-
+@app.route('/ping')
+def ping():
+    return 'pong'
 # Función helper para verificar imágenes
 def verify_image_path(image_path):
     """Verifica y corrige la ruta de la imagen."""
