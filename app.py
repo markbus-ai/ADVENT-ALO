@@ -166,14 +166,14 @@ def index():
 
 @app.route('/api/gifts')
 def get_all_gifts():
-    # current_date = datetime.now()
-    # current_day = current_date.day
+    current_date = datetime.now()
+    current_day = current_date.day
     
     available_gifts = []
     for day in range(1, 26):
         gift = GIFTS.get(day, {})
-        # is_available = day <= current_day
-        is_available = True  # Desbloquear todos los regalos para depuración
+        is_available = day <= current_day
+        #is_available = True  # Desbloquear todos los regalos para depuración
         gift_info = {
             "day": day,
             "available": is_available,
