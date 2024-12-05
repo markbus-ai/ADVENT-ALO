@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuestro Puzzle Navideño de Amor ❄️❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #D62828;
+            --secondary-color: #285430;
+            --background-color: linear-gradient(135deg, #FFFFFF 0%, #F0F8FF 100%);
+            --snow-color: rgba(255,255,255,0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mountains of Christmas', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--background-color);
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .snowflake {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--snow-color);
+            border-radius: 50%;
+            animation: fall linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 3px solid var(--primary-color);
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        #puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            margin: 20px 0;
+            perspective: 1000px;
+        }
+
+        .puzzle-piece {
+            width: 100px;
+            height: 100px;
+            background-size: 400px 400px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .puzzle-piece::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .puzzle-piece:hover::before {
+            opacity: 1;
+        }
+
+        .puzzle-piece:hover {
+            transform: scale(1.05) rotate(5deg);
+            z-index: 10;
+        }
+
+        #message {
+            font-size: 20px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        #win-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #win-overlay h1 {
+            color: var(--primary-color);
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        #special-message {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            max-width: 80%;
+            line-height: 1.6;
+        }
+
+        .restart-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Mountains of Christmas', cursive;
+            font-weight: 700;
+        }
+
+        .restart-btn:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .christmas-decoration {
+            position: absolute;
+            z-index: -1;
+        }
+
+        .ornament {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #FF4500, #DC143C);
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="message">🎄 Resuelve el puzzle navideño de amor 💕</div>
+        <div id="puzzle-container"></div>
+    </div>
+
+    <div id="win-overlay">
+        <h1>¡Puzzle Navideño Resuelto!</h1>
+        <p id="special-message"></p>
+        <button class="restart-btn" onclick="restartPuzzle()">Jugar de Nuevo 🎁</button>
+    </div>
+
+    <script>
+        const puzzleConfig = {
+            gridSize: 4,
+            imageSrc: 'static/images/imgday3.jpg',
+            specialMessage: '¡Te amo más que a la Navidad misma! 🎄❤️'
+        };
+
+        let pieces = [];
+        let originalOrder = [];
+
+        // Snowfall effect
+        function createSnowflakes() {
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.style.left = `${Math.random() * 100}%`;
+                snowflake.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                snowflake.style.opacity = Math.random();
+                snowflake.style.width = `${Math.random() * 3 + 2}px`;
+                snowflake.style.height = snowflake.style.width;
+                document.body.appendChild(snowflake);
+            }
+        }
+
+        // Christmas ornaments
+        function createOrnaments() {
+            const positions = [
+                {top: '10%', left: '5%'},
+                {top: '20%', right: '5%'},
+                {bottom: '10%', left: '10%'},
+                {bottom: '20%', right: '10%'}
+            ];
+
+            positions.forEach(pos => {
+                const ornament = document.createElement('div');
+                ornament.classList.add('ornament', 'christmas-decoration');
+                Object.assign(ornament.style, pos);
+                document.body.appendChild(ornament);
+            });
+        }
+
+        function createPuzzle() {
+            const container = document.getElementById('puzzle-container');
+            container.innerHTML = '';
+            pieces = [];
+
+            // Generate pieces
+            for (let i = 0; i < puzzleConfig.gridSize * puzzleConfig.gridSize; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('puzzle-piece');
+                piece.dataset.index = i;
+                
+                // Calculate background position
+                const row = Math.floor(i / puzzleConfig.gridSize);
+                const col = i % puzzleConfig.gridSize;
+                
+                piece.style.backgroundImage = `url(${puzzleConfig.imageSrc})`;
+                piece.style.backgroundPosition = 
+                    `-${col * 100}px -${row * 100}px`;
+                
+                piece.addEventListener('click', () => movePiece(piece));
+                container.appendChild(piece);
+                pieces.push(piece);
+            }
+
+            // Shuffle pieces
+            shufflePieces();
+        }
+
+        function shufflePieces() {
+            // Store original order
+            originalOrder = pieces.map(p => p.dataset.index);
+            
+            // Fisher-Yates shuffle
+            for (let i = pieces.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pieces[i].style.order, pieces[j].style.order] = 
+                [pieces[j].style.order, pieces[i].style.order];
+            }
+        }
+
+        function movePiece(clickedPiece) {
+            // Find adjacent empty spaces
+            const emptyPieces = pieces.filter(p => !p.style.order);
+            
+            if (emptyPieces.length === 0) {
+                // First move, remove one piece
+                const randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
+                randomPiece.style.order = '-1';
+            }
+
+            const currentPieceOrder = clickedPiece.style.order || '0';
+            
+            // Simple swapping logic with adjacent pieces
+            pieces.forEach(piece => {
+                if (piece !== clickedPiece && 
+                    (!piece.style.order || piece.style.order === '-1')) {
+                    piece.style.order = currentPieceOrder;
+                    clickedPiece.style.order = '-1';
+                }
+            });
+
+            checkWin();
+        }
+
+        function checkWin() {
+            const currentOrder = pieces.map(p => p.dataset.index);
+            const isCorrect = currentOrder.every((val, idx) => 
+                val === originalOrder[idx]);
+
+            if (isCorrect) {
+                document.getElementById('special-message').textContent = 
+                    puzzleConfig.specialMessage;
+                document.getElementById('win-overlay').style.display = 'flex';
+            }
+        }
+
+        function restartPuzzle() {
+            document.getElementById('win-overlay').style.display = 'none';
+            createPuzzle();
+        }
+
+        // Initialize
+        createSnowflakes();
+        createOrnaments();
+        createPuzzle();
+    </script>
+</body>
+</html>
