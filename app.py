@@ -64,9 +64,9 @@ GIFTS = {
         "description": "el dia en el que te conoci 📖✨"
     },
     13: {
-        "type": "link",
-        "content": "static/games/memory.html",
-        "description": "Un juego de memoria personalizado con nuestros momentos favoritos 🎮"
+        "type": "text",
+        "content": "Sos la persona que me hace sentir completo, que me inspira a ser mejor cada día, y que llena mi vida de amor y alegría. No cambiaría ni un solo momento juntos 💫",
+        "description": "Un pensamiento desde el corazón ❤️"
     },
     14: {
         "type": "link",
@@ -103,9 +103,9 @@ GIFTS = {
         "description": "Una búsqueda del tesoro digital - Cada pista te lleva a un recuerdo especial 🗺️"
     },
     19: {
-        "type": "animation",
-        "content": "static/animations/love_story.gif",
-        "description": "Una animación que creé de nuestra historia de amor 🎬"
+        "type": "text",
+        "content": "Cada vez que veo tu sonrisa, mi mundo se ilumina. Me encanta cómo tus ojos brillan cuando estás feliz y cómo tu risa puede alegrar hasta el día más gris. Sos mi rayito de sol ☀️",
+        "description": "Un pensamiento especial para vos 💫"
     },
     20: {
         "type": "photo_mosaic",
@@ -115,7 +115,7 @@ GIFTS = {
     21: {
         "type": "link",
         "content": "static/letters/carta_especial.html",
-        "description": "Una carta digital con todas las razones por las que te amo 💌"
+        "description": "Una carta  con todas las razones por las que te amo 💌"
     },
     22: {
         "type": "text",
