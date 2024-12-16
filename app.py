@@ -70,8 +70,8 @@ GIFTS = {
     },
     14: {
         "type": "link",
-        "content": "static/art/digital_drawing.jpg",
-        "description": "Un dibujo de kitty que hice de vos"
+        "content": "static/memory_lane.html",
+        "description": "Un recorrido virtual por nuestros momentos especiales juntos 🌟"
     },
     15: {
         "type": "text",

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Momentos Especiales</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #f8b3c5;
+            --secondary-color: #e892a9;
+            --accent-color: #f5e6ea;
+            --text-color: #4a4a4a;
+            --background-color: #fff5f7;
+            --card-color: #ffffff;
+            --gradient-1: linear-gradient(135deg, #f8b3c5 0%, #e892a9 100%);
+            --gradient-2: linear-gradient(45deg, #f5e6ea, #f8b3c5);
+            --shadow-sm: 0 4px 12px rgba(232, 146, 169, 0.12);
+            --shadow-md: 0 6px 20px rgba(232, 146, 169, 0.18);
+            --shadow-lg: 0 12px 35px rgba(232, 146, 169, 0.25);
+            --border-radius: 24px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(248, 179, 197, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(232, 146, 169, 0.08) 0%, transparent 60%);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .memory-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            perspective: 1000px;
+        }
+
+        .memory-header {
+            text-align: center;
+            margin-bottom: 80px;
+            padding: 80px 0;
+            background: var(--gradient-1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: var(--transition);
+        }
+
+        .memory-header:hover {
+            transform: translateY(-5px);
+        }
+
+        .memory-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 60%),
+                radial-gradient(circle at 80% 50%, rgba(255,255,255,0.3) 0%, transparent 60%);
+            z-index: 1;
+            transition: var(--transition);
+        }
+
+        .memory-header h1 {
+            color: white;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin: 0;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+            animation: float 4s ease-in-out infinite;
+            letter-spacing: -0.5px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-1);
+            transform: translateX(-50%);
+            border-radius: 4px;
+            box-shadow: var(--shadow-sm);
+            opacity: 0.8;
+        }
+
+        .memory-item {
+            margin-bottom: 120px;
+            position: relative;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .memory-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .memory-content {
+            position: relative;
+            width: calc(50% - 60px);
+            background: var(--card-color);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid rgba(248, 179, 197, 0.15);
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+        }
+
+        .memory-content:hover {
+            transform: translateY(-8px) rotateX(2deg);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(248, 179, 197, 0.4);
+        }
+
+        .memory-item:nth-child(odd) .memory-content {
+            margin-left: auto;
+        }
+
+        .date {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--gradient-2);
+            color: var(--text-color);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            z-index: 2;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .memory-item:nth-child(odd) .date {
+            left: -130px;
+        }
+
+        .memory-item:nth-child(even) .date {
+            right: -130px;
+        }
+
+        .memory-content::before {
+            content: '❤️';
+            position: absolute;
+            top: 50%;
+            width: 40px;
+            height: 40px;
+            background: var(--card-color);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: var(--shadow-sm);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--primary-color);
+        }
+
+        .memory-item:nth-child(odd) .memory-content::before {
+            left: -70px;
+        }
+
+        .memory-item:nth-child(even) .memory-content::before {
+            right: -70px;
+        }
+
+        .memory-content h2 {
+            color: var(--text-color);
+            margin: 0 0 15px 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .memory-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+
+        .memory-content p {
+            margin: 0;
+            line-height: 1.8;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .memory-content {
+                width: calc(100% - 90px);
+                margin-left: 60px !important;
+                padding: 25px;
+            }
+
+            .date {
+                left: 0 !important;
+                right: auto !important;
+                top: -40px !important;
+                transform: none;
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+
+            .memory-content::before {
+                left: -45px !important;
+                right: auto !important;
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+
+            .memory-header h1 {
+                font-size: 2.2rem;
+                padding: 0 20px;
+            }
+
+            .memory-content h2 {
+                font-size: 1.4rem;
+            }
+
+            .memory-content p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .memory-header {
+                padding: 60px 20px;
+            }
+
+            .memory-content {
+                padding: 30px;
+            }
+
+            .date {
+                font-size: 0.85rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="memory-container">
+        <div class="memory-header">
+            <h1>Nuestro Camino Juntos ❤️</h1>
+        </div>
+        
+        <div class="timeline">
+            <div class="memory-item">
+                <div class="memory-content">
+                    <span class="date">Abril 2023</span>
+                    <h2>El Inicio</h2>
+                    <p>Un mensaje en Instagram dio pie a algo muy bonito.</p>
+                </div>
+            </div>
+
+            <div class="memory-item">
+                <div class="memory-content">
+                    <span class="date">Mayo 2023</span>
+                    <h2>Encuentro Mágico</h2>
+                    <p>Nos vimos por primera vez y quede completamente flechado</p>
+                </div>
+            </div>
+
+            <div class="memory-item">
+                <div class="memory-content">
+                    <span class="date">Junio 2023</span>
+                    <h2>Primeros Pasos</h2>
+                    <p>Entre dudas y emociones, cada salia juntos reforzaba lo que sentia</p>
+                </div>
+            </div>
+
+            <div class="memory-item">
+                <div class="memory-content">
+                    <span class="date">1 Julio 2023</span>
+                    <h2>Decisión Valiente</h2>
+                    <p>Un impulso del corazón, te pedí ser novios, y cambió todo para mejor.</p>
+                </div>
+            </div>
+
+            <div class="memory-item">
+                <div class="memory-content">
+                    <span class="date">Agosto 2023</span>
+                    <h2>Momentos Compartidos</h2>
+                    <p>Risas y lágrimas, cada experiencia nos hizo más fuertes y cercanos.</p>
+                </div>
+            </div>
+
+            <div class="memory-item">
+                <div class="memory-content">
+                    <span class="date">Octubre 2023</span>
+                    <h2>Juntos Crecemos</h2>
+                    <p>Construyendo un amor que crece cada día, creando recuerdos inolvidables.</p>
+                </div>
+            </div>
+
+            <div class="memory-item">
+                <div class="memory-content">
+                    <span class="date">Diciembre 2023</span>
+                    <h2>Primera Navidad</h2>
+                    <p>Celebrando juntos con mi familia por primera vez</p>
+                </div>
+            </div>
+            <div class="memory-item">
+                <div class="memory-content">
+                    <span class="date">julio 2024</span>
+                    <h2>un año de novios</h2>
+                    <p>a pesar de todo llegamos a un año de amor</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        });
+
+        document.querySelectorAll('.memory-item').forEach((item) => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
