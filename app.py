@@ -60,7 +60,7 @@ GIFTS = {
     },
     12: {
         "type": "link",
-        "content": "static/stories/our_story.html",
+        "content": "static/our_story.html",
         "description": "el dia en el que te conoci 📖✨"
     },
     13: {
