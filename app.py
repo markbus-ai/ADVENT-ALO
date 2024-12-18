@@ -98,9 +98,9 @@ GIFTS = {
         "description": "Un quiz interactivo sobre nuestra historia"
     },
     18: {
-        "type": "link",
-        "content": "static/hunt/clues.json",
-        "description": "Una búsqueda del tesoro digital - Cada pista te lleva a un recuerdo especial 🗺️"
+        "type": "text",
+        "content": "Cada vez que veo tu sonrisa, mi mundo se ilumina. Me encanta cómo tus ojos brillan cuando estás feliz y cómo tu risa puede alegrar hasta el día más gris. Sos mi rayito de sol ☀️",
+        "description": "Un pensamiento especial para vos 💫"
     },
     19: {
         "type": "text",
