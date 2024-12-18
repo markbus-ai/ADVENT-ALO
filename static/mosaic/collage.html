@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestro Mosaico de Amor</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            font-family: Arial, sans-serif;
+        }
+
+        .heart-container {
+            width: 800px;
+            height: 800px;
+            position: relative;
+            margin: 50px auto;
+        }
+
+        .heart {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .photo-container {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            transition: transform 0.3s ease;
+        }
+
+        .photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .photo-container:hover {
+            transform: scale(2);
+            z-index: 1000;
+        }
+
+        .title {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            top: -60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-container">
+        <h1 class="title">Nuestro Corazón de Recuerdos ❤️</h1>
+        <div class="heart" id="heart"></div>
+    </div>
+
+    <script>
+        const sourceImages = [
+            '20240513_153300.jpg', '20240601_180529.jpg', '20240601_182040.jpg',
+            '20240609_170054.jpg', '20240609_170105.jpg', '20240701_171142.jpg',
+            '20240804_175744.jpg', '20240922_215728.jpg', '20241206_223321.jpg',
+            '20241206_223326.jpg', '20241206_223331.jpg', 'IMG_20230602_164456.jpg',
+            'IMG_20230602_164513.jpg', 'IMG_20230707_214403.jpg', 'IMG_20230707_215626.jpg',
+            'IMG_20230707_215647.jpg', 'IMG_20230707_215649.jpg', 'IMG_20230707_215715.jpg',
+            'IMG_20230707_225214.jpg', 'IMG_20230707_225221.jpg', 'IMG_20230809_150411.jpg',
+            'IMG_20230809_154146.jpg', 'IMG_20230809_162049.jpg', 'IMG_20230824_142744.jpg',
+            'IMG_20230824_143156.jpg', 'IMG_20230826_150546.jpg', 'IMG_20231004_002329.jpg',
+            'IMG_20231028_203434.jpg', 'IMG_20231106_160006_1.jpg', 'WIN_20240122_21_00_16_Pro.jpg'
+        ];
+
+        function createHeart() {
+            const heart = document.getElementById('heart');
+            const heartPoints = [];
+            const centerX = 400;
+            const centerY = 400;
+            const scale = 15;
+
+            // Generar puntos que forman un corazón
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.05) {
+                const x = 16 * Math.pow(Math.sin(angle), 3);
+                const y = 13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle);
+                heartPoints.push({
+                    x: centerX + x * scale,
+                    y: centerY - y * scale
+                });
+            }
+
+            // Colocar las fotos en los puntos del corazón
+            let imageIndex = 0;
+            heartPoints.forEach((point, index) => {
+                const container = document.createElement('div');
+                container.className = 'photo-container';
+                container.style.left = `${point.x - 30}px`;
+                container.style.top = `${point.y - 30}px`;
+
+                const img = document.createElement('img');
+                img.src = `source_images/${sourceImages[imageIndex]}`;
+                img.className = 'photo';
+                img.alt = 'Foto de nosotros';
+
+                container.appendChild(img);
+                heart.appendChild(container);
+
+                imageIndex = (imageIndex + 1) % sourceImages.length;
+            });
+        }
+
+        window.onload = createHeart;
+    </script>
+</body>
+</html>
