@@ -108,19 +108,19 @@ GIFTS = {
         "description": "Un pensamiento especial para vos 💫"
     },
     20: {
-        "type": "photo_mosaic",
-        "content": "static/mosaic/collage.jpg",
+        "type": "link",
+        "content": "static/mosaic/collage.html",
         "description": "Un mosaico gigante hecho con cientos de nuestras fotos juntos que forma un corazón ❤️📸"
     },
     21: {
-        "type": "link",
-        "content": "static/letters/carta_especial.html",
-        "description": "Una carta  con todas las razones por las que te amo 💌"
+        "type": "text",
+        "content": "Hoy me acuerdo cuando te pedi ser novios. Estabamos en el aldrey, nervioso pero seguro, y en ese momento mi vida cambió para siempre. Cada día agradezco habertelo pedido ❤️",
+        "description": "Un recuerdo especial de nosotros 💑"
     },
     22: {
-        "type": "text",
-        "content": "Cada día que pasa me enamoro más de tu sonrisa, de tu forma de ser, de cómo me haces sentir. Sos mi persona favorita en todo el mundo y no puedo imaginar mi vida sin vos ❤️",
-        "description": "Un mensaje desde el corazón 💝"
+        "type": "link",
+        "content": "static/garden/jardin_virtual.html", 
+        "description": "Un jardín virtual donde cada flor representa un momento especial juntos. ¡Puedes regar las flores y verlas crecer! 🌸🌺"
     },
     23: {
         "type": "link",
@@ -128,9 +128,9 @@ GIFTS = {
         "description": "Cuenta regresiva personalizada para Navidad - Con mensajes especiales cada hora 🎄"
     },
     24: {
-        "type": "link",
-        "content": "static/garden/jardin_virtual.html", 
-        "description": "Un jardín virtual donde cada flor representa un momento especial juntos. ¡Puedes regar las flores y verlas crecer! 🌸🌺"
+        "type": "text",
+        "content": "Cada día que pasa me enamoro más de tu sonrisa, de tu forma de ser, de cómo me haces sentir. Sos mi persona favorita en todo el mundo y no puedo imaginar mi vida sin vos ❤️",
+        "description": "Un mensaje desde el corazón 💝"
     },
     25: {
         "type": "link",
